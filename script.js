@@ -3,12 +3,54 @@ numberButtons.forEach(button => button.addEventListener("click", displayNumber))
 const mainText = document.querySelector("#mainText");
 const delButton = document.querySelector(`button[value = "DEL"]`);
 delButton.addEventListener("click", deleteNumber);
-let currentDisplayText = "";
-console.log(mainText);
+const equalButton = document.querySelector(`button[value = "="]`);
+equalButton.addEventListener("click", getEquals);
+const topText = document.querySelector("#topText");
+const acButton = document.querySelector(`button[value = "AC"]`);
+acButton.addEventListener("click", clearCalculator);
+const plusMinusButton = document.querySelector(`button[value = "+/-"]`);
+plusMinusButton.addEventListener("click", addPlusOrMinus);
+function addPlusOrMinus(){
+    if(mainText.textContent[0] === "-"){
+
+    }
+}
+function clearCalculator(){
+    mainText.textContent = "0";
+    topText.textContent = "";
+}
+function getEquals(){
+    
+    const operator = getOperator(mainText.textContent);
+    if(operator == undefined){
+        topText.textContent =  `${mainText.textContent} =`
+        return;
+    }
+    const bothNumbers = mainText.textContent.split(operator);
+    if(bothNumbers.length === 1){
+        return;
+    }
+    topText.textContent =  `${mainText.textContent} =`
+    //Have to check closely if division happens to see if its divided by 0
+    if(operator === "/"){
+      if(bothNumbers[1] == 0){
+          mainText.textContent = "Nice try lol :)"  ;
+          return;
+      }   
+      else{
+        mainText.textContent = Math.round(operate(operator,+bothNumbers[0], +bothNumbers[1]) * 100)/100;
+      }    
+    }
+    else{
+        mainText.textContent = Math.round(operate(operator,+bothNumbers[0], +bothNumbers[1]) * 100)/100;
+      }
+    
+}
 function deleteNumber(){
-    console.log(mainText.textContent.length)
+    if(mainText.textContent === "Nice try lol :)"){
+        return;
+    }
     if(mainText.textContent.length === 1){
-        console.log("lel");
         mainText.textContent = "0";
     }
     else{
@@ -16,8 +58,12 @@ function deleteNumber(){
     }
 }
 function displayNumber(e){
+    if(mainText.textContent === "Nice try lol :)"){
+        return;
+    }
+    if(e.target.value === "=") return;
     if(checkIfOperator(e) === true){
-        if(getAmountOfOperators(currentDisplayText) >= 1){
+        if(getAmountOfOperators(mainText.textContent) >= 1){
             return;
         }
     }
@@ -28,7 +74,6 @@ function displayNumber(e){
     if(mainText.textContent.length <= 14){
       mainText.textContent += e.target.value;  
       currentDisplayText = mainText.textContent;
-      console.log(currentDisplayText);
     }
 }
 function checkIfOperator(e){
@@ -48,6 +93,14 @@ function getAmountOfOperators(string){
     }
     return count;
 }
+function getOperator(string){
+    for(let i = 0; i < string.length; i++){
+        if(string[i] === "+" || string[i] === "-" || string[i] === "/" ||
+        string[i] === "*" || string[i] === "%"){
+         return string[i];
+      }
+    }
+}
 function add(num1, num2){
     return num1 + num2;
 }
@@ -62,9 +115,13 @@ function multiply(num1, num2){
 
 function divide(num1, num2){
     if(num2 == 0){
-        return "ERROR"
+        return "Nice try lol :)";
     }
     return num1/num2;
+}
+
+function modulus(num1,num2){
+    return num1 % num2;
 }
 
 function operate(operation,num1,num2){
@@ -79,5 +136,8 @@ function operate(operation,num1,num2){
     }
     if(operation === "/"){
         return divide(num1,num2);
+    }
+    if(operation === "%"){
+        return modulus(num1,num2);
     }
 }

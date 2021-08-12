@@ -86,12 +86,14 @@ h1{
 #mainText{
     font-style:'Inconsolata', monospace ;
     font-size: 3.2em;
+    align-self: center;
 }
 
 #topText{
     font-style:  'Inconsolata', monospace;
     font-size: 1.3em;
     align-self: end;
+    color:rgb(128, 128, 128);
 }
 
 
