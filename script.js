@@ -46,8 +46,17 @@ function pressedKey(e){
    else if(allOperators.includes(e.key)){
        addOperatorKey(e.key);
    }
+
+   else if(e.key === "."){
+       addDecimalKey();
+   }
    
    
+}
+function addDecimalKey(){
+    if(mainText.textContent.indexOf(".") === -1){
+        mainText.textContent += ".";
+    }
 }
 function addOperatorKey(key){
     if(getAmountOfOperators(mainText.textContent) === 0){
