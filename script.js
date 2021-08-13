@@ -10,22 +10,32 @@ const acButton = document.querySelector(`button[value = "AC"]`);
 acButton.addEventListener("click", clearCalculator);
 const plusMinusButton = document.querySelector(`button[value = "+/-"]`);
 plusMinusButton.addEventListener("click", addPlusOrMinus);
+const allOperators = ["+","-","/","%","*"];
+const operatorsWithoutMinus = ["+","/","%","*"];
 function addPlusOrMinus(){
     if(mainText.textContent[0] === "-"){
-
+        mainText.textContent = mainText.textContent.slice(1);
+        return;
     }
+    if(mainText.textContent.length <= 14){
+        mainText.textContent = "-" + mainText.textContent;
+    }
+   
 }
 function clearCalculator(){
     mainText.textContent = "0";
     topText.textContent = "";
 }
 function getEquals(){
-    
+    if(checkIfOnlyOperator(mainText.textContent)){
+        return;
+    }
     const operator = getOperator(mainText.textContent);
     if(operator == undefined){
         topText.textContent =  `${mainText.textContent} =`
         return;
     }
+   
     const bothNumbers = mainText.textContent.split(operator);
     if(bothNumbers.length === 1){
         return;
@@ -42,9 +52,25 @@ function getEquals(){
       }    
     }
     else{
+        if(bothNumbers.length === 3){
+            mainText.textContent = Math.round(operate(operator,+("-" + bothNumbers[1]), +bothNumbers[2]) * 100)/100;
+        }
+        else{
         mainText.textContent = Math.round(operate(operator,+bothNumbers[0], +bothNumbers[1]) * 100)/100;
+        }
       }
     
+}
+function checkIfOnlyOperator(string){
+    if(string.length === 1 && allOperators.includes(string)){
+        return true;
+    }
+    if(string.length <= 2){
+        if(allOperators.includes(string[0]) &&allOperators.includes(string[1])){
+            return true;
+        }
+    }
+    return false;
 }
 function deleteNumber(){
     if(mainText.textContent === "Nice try lol :)"){
@@ -61,19 +87,35 @@ function displayNumber(e){
     if(mainText.textContent === "Nice try lol :)"){
         return;
     }
+    if(e.target.value === "."){
+        addDecimal(e);
+        return;
+    }
     if(e.target.value === "=") return;
     if(checkIfOperator(e) === true){
         if(getAmountOfOperators(mainText.textContent) >= 1){
             return;
         }
     }
-    if(mainText.textContent[0] === "0"){
+    if(mainText.textContent[0] === "0" && mainText.textContent.length === 1){
+       if(!allOperators.includes(e.target.value)){
         mainText.textContent = e.target.value;
-        return;
+       }
+       else{
+           mainText.textContent += e.target.value;
+       }
+       return;
+       
     }
+    
     if(mainText.textContent.length <= 14){
       mainText.textContent += e.target.value;  
       currentDisplayText = mainText.textContent;
+    }
+}
+function addDecimal(e){
+    if(mainText.textContent.indexOf(e.target.value) === -1 && mainText.textContent.length <= 14){
+        mainText.textContent += e.target.value;
     }
 }
 function checkIfOperator(e){
@@ -86,6 +128,9 @@ function checkIfOperator(e){
 function getAmountOfOperators(string){
     let count = 0;
     for(let i = 0; i < string.length; i++){
+        if(i === 0 && string[i] === "-"){
+            continue;
+        }
         if(string[i] === "+" || string[i] === "-" || string[i] === "/" ||
            string[i] === "*" || string[i] === "%"){
             count++;
@@ -94,7 +139,7 @@ function getAmountOfOperators(string){
     return count;
 }
 function getOperator(string){
-    for(let i = 0; i < string.length; i++){
+    for(let i = 1; i < string.length; i++){
         if(string[i] === "+" || string[i] === "-" || string[i] === "/" ||
         string[i] === "*" || string[i] === "%"){
          return string[i];

@@ -65,10 +65,7 @@ body{
     display:grid;
 }
 
-button[value = "0"]{
-    grid-column: 1/3;
-    width:95%
-}
+
  button[value = "DEL"]{
     background-color: rgb(192, 124, 107);
 
