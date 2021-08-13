@@ -17,20 +17,42 @@ window.addEventListener("keydown", pressedKey);
 function pressedKey(e){
    if(e.key === "Backspace"){
        if(mainText.textContent.length === 1){
-         mainText.textContent = "0";
+           mainText.textContent = "0";
        }
        else{
            mainText.textContent = mainText.textContent.slice(0,mainText.textContent.length -1);
        }
+       return;
    }
-   if(allNumbers.includes(e.key) && mainText.textContent.length <= 14){
-       if(mainText.textContent[0] === "0"){
+   else if(allNumbers.includes(e.key) && mainText.textContent.length <= 14){
+       if(mainText.textContent[0] === "0" && mainText.textContent.length < 2){
            mainText.textContent = e.key;
        }
+       else if(mainText.textContent.length <= 2 && mainText.textContent[0] === "-" && mainText.textContent[1] === "0"){
+            mainText.textContent = mainText.textContent[0] + e.target.value;
+            return;
+       }
        else{
-       mainText.textContent += e.key;
+            mainText.textContent += e.key;
        }
    }
+   else if(e.key === "Enter"){
+       //Stops the behaviour of clicking the most recent button pressed
+       e.preventDefault();
+       e.stopPropagation();
+       getEquals(e);
+       return;
+   }
+   else if(allOperators.includes(e.key)){
+       addOperatorKey(e.key);
+   }
+   
+   
+}
+function addOperatorKey(key){
+    if(getAmountOfOperators(mainText.textContent) === 0){
+      mainText.textContent += key;  
+    }
 }
 function addPlusOrMinus(){
     if(mainText.textContent[0] === "-"){
@@ -79,6 +101,7 @@ function getEquals(){
         mainText.textContent = Math.round(operate(operator,+bothNumbers[0], +bothNumbers[1]) * 100)/100;
         }
       }
+     
     
 }
 function checkIfOnlyOperator(string){
@@ -127,7 +150,10 @@ function displayNumber(e){
        return;
        
     }
-    
+    if(mainText.textContent.length <= 2 && mainText.textContent[0] === "-" && mainText.textContent[1] === "0"){
+        mainText.textContent = mainText.textContent[0] + e.target.value;
+        return;
+    }
     if(mainText.textContent.length <= 14){
       mainText.textContent += e.target.value;  
       currentDisplayText = mainText.textContent;
