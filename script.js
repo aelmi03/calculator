@@ -12,6 +12,26 @@ const plusMinusButton = document.querySelector(`button[value = "+/-"]`);
 plusMinusButton.addEventListener("click", addPlusOrMinus);
 const allOperators = ["+","-","/","%","*"];
 const operatorsWithoutMinus = ["+","/","%","*"];
+const allNumbers = ["0","1","2","3","4","5","6","7","8","9"];
+window.addEventListener("keydown", pressedKey);
+function pressedKey(e){
+   if(e.key === "Backspace"){
+       if(mainText.textContent.length === 1){
+         mainText.textContent = "0";
+       }
+       else{
+           mainText.textContent = mainText.textContent.slice(0,mainText.textContent.length -1);
+       }
+   }
+   if(allNumbers.includes(e.key) && mainText.textContent.length <= 14){
+       if(mainText.textContent[0] === "0"){
+           mainText.textContent = e.key;
+       }
+       else{
+       mainText.textContent += e.key;
+       }
+   }
+}
 function addPlusOrMinus(){
     if(mainText.textContent[0] === "-"){
         mainText.textContent = mainText.textContent.slice(1);
